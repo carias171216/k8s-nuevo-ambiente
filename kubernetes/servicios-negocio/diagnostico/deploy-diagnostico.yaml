@@ -1,0 +1,33 @@
+apiVersion: apps/v1 # i se Usa apps/v1beta2 para versiones anteriores a 1.9.0
+kind: Deployment
+metadata:
+  name: idc-servicio-diagnostico
+  labels:
+    name: "servicio-diagnostico"
+spec:
+  selector:   #permite seleccionar un conjunto de objetos que cumplan las condicione
+    matchLabels:
+      app: diagnostico
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  template:   # Plantilla que define el container
+    metadata:
+      labels:
+        app: diagnostico
+    spec:
+      containers:
+      - name: idc-servicio-diagnostico
+        image: dmcontainerregister.azurecr.io/idc-servicio-diagnostico-dev:1.0.0.31
+        ports:
+          - containerPort: 8506
+        env:
+          - name: SPRING_PROFILES_ACTIVE
+            value: k8s-dev
+          - name: SERVER_PORT
+            value: "8506"
+      imagePullSecrets:
+        - name: regcred
+      nodeSelector:
+        nodo: master
+

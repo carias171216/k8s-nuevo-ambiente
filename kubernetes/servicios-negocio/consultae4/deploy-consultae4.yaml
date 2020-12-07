@@ -1,0 +1,33 @@
+apiVersion: apps/v1 # i se Usa apps/v1beta2 para versiones anteriores a 1.9.0
+kind: Deployment
+metadata:
+  name: idc-servicio-consultae4
+  labels:
+    name: "idc-servicio-consultae4"
+spec:
+  selector:   #permite seleccionar un conjunto de objetos que cumplan las condicione
+    matchLabels:
+      app: consultae4
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  template:   # Plantilla que define el container
+    metadata:
+      labels:
+        app: consultae4
+    spec:
+      containers:
+      - name: idc-servicio-consultae4
+        image: dmcontainerregister.azurecr.io/idc_servicio_consultae4:latest
+        ports:
+          - containerPort: 80
+        env:
+          - name: ASPNETCORE_ENVIRONMENT
+            value: k8sDev
+          - name: SERVER_PORT
+            value: "8570"
+      imagePullSecrets:
+        - name: regcred
+      nodeSelector:
+        nodo: master
+

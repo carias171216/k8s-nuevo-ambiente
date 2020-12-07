@@ -1,0 +1,40 @@
+apiVersion: apps/v1 # i se Usa apps/v1beta2 para versiones anteriores a 1.9.0
+kind: Deployment
+metadata:
+  name: idc-servicio-formularios
+  labels:
+    name: "idc-servicio-formularios"
+spec:
+  selector:   #permite seleccionar un conjunto de objetos que cumplan las condicione
+    matchLabels:
+      app: formularios
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  template:   # Plantilla que define el container
+    metadata:
+      labels:
+        app: formularios
+    spec:
+      containers:
+      - name: idc-servicio-formularios
+        image: dmcontainerregister.azurecr.io/idc-servicio-formularios-dev-local:1.0.0.7
+        volumeMounts:
+        - mountPath: /imagenes-e3
+          name: imagenes-e3
+        ports:
+          - containerPort: 8522
+        env:
+          - name: SPRING_PROFILES_ACTIVE
+            value: k8s-dev
+          - name: SERVER_PORT
+            value: "8522"
+      imagePullSecrets:
+        - name: regcred
+      nodeSelector:
+        nodo: master
+      volumes:
+      - name: imagenes-e3
+        hostPath:
+          path: /mnt/imagenes-e3
+

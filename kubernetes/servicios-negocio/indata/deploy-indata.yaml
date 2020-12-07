@@ -1,0 +1,31 @@
+apiVersion: apps/v1 # i se Usa apps/v1beta2 para versiones anteriores a 1.9.0
+kind: Deployment
+metadata:
+  name: idc-servicio-indata
+  labels:
+    name: "servicio-indata"
+spec:
+  selector:   #permite seleccionar un conjunto de objetos que cumplan las condicione
+    matchLabels:
+      app: indata
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  template:   # Plantilla que define el container
+    metadata:
+      labels:
+        app: indata
+    spec:
+      containers:
+      - name: idc-servicio-indata
+        image: dmcontainerregister.azurecr.io/idc-servicio-indata-dev:1.0.0.67
+        ports:
+          - containerPort: 8529
+        env:
+          - name: SPRING_PROFILES_ACTIVE
+            value: k8s-dev
+      imagePullSecrets:
+        - name: regcred
+      nodeSelector:
+        nodo: master
+

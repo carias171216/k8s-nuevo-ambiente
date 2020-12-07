@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: idc-servicio-freeaprobacion
+  labels:
+    name: "servicio-freeaprobacion"
+spec:
+  selector:   #permite seleccionar un conjunto de objetos que cumplan las condicione
+    matchLabels:
+      app: freeaprobacion
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  template:   # Plantilla que define el container
+    metadata:
+      labels:
+        app: freeaprobacion
+    spec:
+      containers:
+      - name: idc-servicio-freeaprobacion
+        image: dmcontainerregister.azurecr.io/idc-servicio-freeaprobacion-dev:1.0.0.6
+        volumeMounts:
+        - mountPath: /etc/localtime
+          name: localtime
+        - mountPath: /etc/timezone
+          name: timezone
+        ports:
+          - containerPort: 8571
+        env:
+          - name: SPRING_PROFILES_ACTIVE
+            value: k8s-dev
+          - name: SERVER_PORT
+            value: "8571"
+      imagePullSecrets:
+        - name: regcred
+      nodeSelector:
+        nodo: master
+      volumes:
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+      - name: timezone
+        hostPath:
+          path: /etc/timezone

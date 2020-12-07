@@ -1,0 +1,28 @@
+apiVersion: apps/v1 # i se Usa apps/v1beta2 para versiones anteriores a 1.9.0
+kind: Deployment
+metadata:
+  name: idc-eureka-server
+  labels:
+    rol: "discovery-service"
+spec:
+  selector:   #permite seleccionar un conjunto de objetos que cumplan las condicione
+    matchLabels:
+      app: eureka
+      project: register
+  replicas: 1 # indica al controlador que ejecute 2 pods
+  template:   # Plantilla que define los containers
+    metadata:
+      labels:
+        app: eureka
+        project: register
+    spec:
+      containers:
+      - name: idc-eureka-server
+        image: dmcontainerregister.azurecr.io/idc-eureka-server:3262
+        ports:
+        - containerPort: 8761
+      imagePullSecrets:
+        - name: regcred
+      nodeSelector:
+        nodo: master
+

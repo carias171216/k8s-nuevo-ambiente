@@ -1,0 +1,10 @@
+{
+	"auths": {
+		"dmcontainerregister.azurecr.io": {
+			"auth": "ZG1jb250YWluZXJyZWdpc3Rlcjo0R3JFK3lJcEZrSjdxTzA3Z0o5eWo0c2ZoOE9wQ0kwZA=="
+		}
+	},
+	"HttpHeaders": {
+		"User-Agent": "Docker-Client/19.03.6 (linux)"
+	}
+}
